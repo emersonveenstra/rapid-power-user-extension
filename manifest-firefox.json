@@ -1,0 +1,74 @@
+{
+	"manifest_version": 3,
+	"name": "Rapid Poweruser Extension",
+	"description": "Fully replace iD with Rapid for all your OSM editing needs. Includes automatic rewrites from osm.org and Strava support",
+	"version": "0.1.0",
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "rapid-power-user-extension@github.com",
+			"strict_min_version": "113.0"
+		}
+	},
+	"action": {
+		"default_icon": {
+			"48": "icons/rapid-48.png"
+		},
+		"default_title": "Start Mapping!"
+	},
+	"icons": {
+		"48": "icons/rapid-48.png"
+	},
+	"permissions": [
+		"cookies",
+		"declarativeNetRequest"
+	],
+	"host_permissions": [
+		"*://*.strava.com/*",
+		"*://*.openstreetmap.org/*",
+		"*://*.rapideditor.org/*"
+	],
+	"background": {
+		"scripts": ["sw.js"],
+		"type": "module"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"https://rapideditor.org/edit*"
+			],
+			"js": [
+				"scripts/add-imagery-script.js"
+			],
+			"run_at": "document_start",
+			"all_frames": true
+		},
+		{
+			"matches": [
+				"https://www.strava.com/*"
+			],
+			"js": [
+				"scripts/refresh-cookies.js"
+			],
+			"run_at": "document_idle",
+			"all_frames": true
+		}
+	],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"scripts/display-strava-imagery.js"
+			],
+			"matches": [
+				"https://rapideditor.org/*"
+			]
+		}
+	],
+	"declarative_net_request": {
+		"rule_resources": [{
+			"id": "osm_org_rewrites",
+			"enabled": true,
+			"path": "static_rules.json"
+		}]
+	},
+	"homepage_url": "https://github.com/emersonveenstra/rapid-power-user-extension"
+  }

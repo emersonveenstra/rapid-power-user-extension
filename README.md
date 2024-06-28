@@ -5,6 +5,8 @@ A Chrome and Firefox extension to seamlessly integrate Rapid as your primary OSM
 1. Redirects the OSM.org Edit button to open in Rapid
 2. Integrates Strava Heatmap overlays into Rapid (credit to the original [id-strava-heatmap extension](https://github.com/cmoffroad/id-strava-heatmap-extension) for some of the code)
 
+Should work on all Chromium-based and Gecko-based browsers that support Manifest V3 extensions, I test it on Firefox, Brave, Vivaldi, and Chrome. 
+
 ## Install 
 
 ### From Chrome or Firefox store

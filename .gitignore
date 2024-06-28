@@ -4,3 +4,5 @@ chrome/*
 firefox/*
 local/*
 !manifest.json
+dist/*
+!.gitkeep

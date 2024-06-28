@@ -1,2 +1,6 @@
 _metadata/
-manifest.json
+.DS_Store
+chrome/*
+firefox/*
+local/*
+!manifest.json

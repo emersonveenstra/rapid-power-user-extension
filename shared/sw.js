@@ -97,6 +97,8 @@ async function clearStravaCredentials() {
 	});
 
 	stravaCredentials = null;
+	chrome.action.setIcon({ path: "icons/rapid-strava-48.png" });
+	chrome.action.setTitle({ title: "Log Into Strava"});
 }
 
 

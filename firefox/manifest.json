@@ -49,8 +49,17 @@
 			"js": [
 				"scripts/refresh-cookies.js"
 			],
-			"run_at": "document_idle",
-			"all_frames": true
+			"run_at": "document_idle"
+		},
+		{
+			"matches": [
+				"https://www.strava.com/login*",
+				"https://www.strava.com/logout*"
+			],
+			"js": [
+				"scripts/logout-strava.js"
+			],
+			"run_at": "document_idle"
 		}
 	],
 	"web_accessible_resources": [

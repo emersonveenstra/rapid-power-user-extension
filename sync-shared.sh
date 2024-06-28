@@ -1,0 +1,3 @@
+rm -rf chrome/shared/{icons,screenshots,scripts,static_rules.json,sw.js} && cp -r shared/{icons,screenshots,scripts,static_rules.json,sw.js} chrome/
+rm -rf firefox/shared/{icons,screenshots,scripts,static_rules.json,sw.js} && cp -r shared/{icons,screenshots,scripts,static_rules.json,sw.js} firefox/
+rm -rf local/shared/{icons,screenshots,scripts,static_rules.json,sw.js} && cp -r shared/{icons,screenshots,scripts,static_rules.json,sw.js} local/

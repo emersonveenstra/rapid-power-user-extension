@@ -11,7 +11,8 @@
 		"default_title": "Start Mapping!"
 	},
 	"icons": {
-		"48": "icons/rapid-48.png"
+		"48": "icons/rapid-48.png",
+		"128": "icons/rapid-128.png"
 	},
 	"permissions": [
 		"cookies",
@@ -39,7 +40,7 @@
 		},
 		{
 			"matches": [
-				"https://www.strava.com/*"
+				"https://www.strava.com/maps/global-heatmap*"
 			],
 			"js": [
 				"scripts/refresh-cookies.js"

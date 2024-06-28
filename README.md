@@ -29,7 +29,7 @@ If you don't want to use Strava you can just hide the plugin icon, it will still
 
 ## Screenshots
 
-![alt text](shared/screenshots/strava-list.png)
+![screenshot showing built in Strava support](shared/screenshots/strava-list.png)
 
 
 https://github.com/emersonveenstra/rapid-power-user-extension/assets/5402360/b69b59d7-76ab-4d7c-8927-ee180d612b6c

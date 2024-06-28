@@ -5,8 +5,19 @@ A Chrome and Firefox extension to seamlessly integrate Rapid as your primary OSM
 1. Redirects the OSM.org Edit button to open in Rapid
 2. Integrates Strava Heatmap overlays into Rapid (credit to the original [id-strava-heatmap extension](https://github.com/cmoffroad/id-strava-heatmap-extension) for some of the code)
 
-## How to use
-Download for Chrome or Firefox (soon!), or clone this repository, copy either `manifest-chrome.json` or `manifest-firefox.json` to `manifest.json` and load it directly from the folder. When installed, the plugin will show up in your toolbar somewhere. If the plugin icon is orange, then you need to log into Strava by clicking the plugin icon. Once you're logged in to Strava, the icon will turn pink and Strava support is enabled.
+## Install 
+
+### From Chrome or Firefox store
+Coming soon!
+
+### From git
+Clone this repository, run `./sync-shared.sh`. Load the extension from the `chrome/` ([See Instructions](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), this is also for Chromium/Vivaldi/Brave/etc.) or `firefox/` folder ([See instructions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing))
+
+There is also a `local/` directory for loading into Chromium-based browsers that allows the extension to work on `http://127.0.0.1:8080` for local Rapid development.
+
+## Using
+
+When installed, the plugin will show up in your toolbar somewhere (it may be hidden behind an overflow icon at first). If the plugin icon is orange, then you need to log into Strava by clicking the plugin icon. Once you're logged in to Strava, the icon will turn pink and Strava support is enabled.
 
 If you don't want to use Strava you can just hide the plugin icon, it will still redirect everything from iD to Rapid without being logged into Strava.
 
@@ -16,5 +27,5 @@ If you don't want to use Strava you can just hide the plugin icon, it will still
 
 ## Screenshots
 
-![alt text](screenshots/overlay-list.png)
-![alt text](screenshots/strava-screenshot.png)
+![alt text](shared/screenshots/strava-list.png)
+![alt text](shared/screenshots/power-user-demo.mp4)

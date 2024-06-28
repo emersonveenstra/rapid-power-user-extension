@@ -8,7 +8,7 @@ A Chrome and Firefox extension to seamlessly integrate Rapid as your primary OSM
 ## Install 
 
 ### From Chrome or Firefox store
-Coming soon!
+Download for [Firefox](https://addons.mozilla.org/addon/rapid-power-user-extension/) or Chrome (waiting for review!)
 
 ### From git
 Clone this repository, run `./sync-shared.sh`. Load the extension from the `chrome/` ([See Instructions](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), this is also for Chromium/Vivaldi/Brave/etc.) or `firefox/` folder ([See instructions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing))

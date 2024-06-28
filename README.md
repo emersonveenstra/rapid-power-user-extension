@@ -17,7 +17,7 @@ There is also a `local/` directory for loading into Chromium-based browsers that
 
 ## Using
 
-When installed, the plugin will show up in your toolbar somewhere (it may be hidden behind an overflow icon at first). If the plugin icon is orange, then you need to log into Strava by clicking the plugin icon. Once you're logged in to Strava, the icon will turn pink and Strava support is enabled.
+When installed, the plugin will show up in your toolbar somewhere (it may be hidden behind an overflow icon at first). If the plugin icon is orange, then you need to log into Strava by clicking the plugin icon. Once you're logged in to Strava, load [the heatmap](https://www.strava.com/maps/global-heatmap), the icon will turn pink (may need to refresh the page one time) and Strava support is enabled.
 
 If you don't want to use Strava you can just hide the plugin icon, it will still redirect everything from iD to Rapid without being logged into Strava.
 

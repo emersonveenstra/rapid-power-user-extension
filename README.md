@@ -10,7 +10,7 @@ Should work on all Chromium-based and Gecko-based browsers that support Manifest
 ## Install 
 
 ### From Chrome or Firefox store
-Download for [Firefox](https://addons.mozilla.org/addon/rapid-power-user-extension/) or Chrome (waiting for review!)
+Download for [Firefox](https://addons.mozilla.org/addon/rapid-power-user-extension/) or [Chrome](https://chromewebstore.google.com/detail/rapid-power-user-extensio/djjkglmhbemnkfjcnfjdanodcbmfpdgm)
 
 ### From git
 Clone this repository, run `./sync-shared.sh`. Load the extension from the `chrome/` ([See Instructions](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), this is also for Chromium/Vivaldi/Brave/etc.) or `firefox/` folder ([See instructions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Your_first_WebExtension#installing))

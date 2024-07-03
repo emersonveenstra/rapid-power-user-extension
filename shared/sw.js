@@ -101,13 +101,15 @@ async function clearStravaCredentials() {
 	chrome.action.setTitle({ title: "Log Into Strava"});
 }
 
-
-chrome.runtime.onMessage.addListener(async function(message) {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if (message["type"] === 'requestStravaCredentials') {
 		return requestStravaCredentials();
 	}
 	if (message["type"] === 'clearStravaCredentials') {
 		return clearStravaCredentials();
+	}
+	if (message["type"] === 'getStravaCredentials') {
+		sendResponse({credentials: stravaCredentials});
 	}
 });
 

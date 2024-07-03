@@ -21,19 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+const stravaScript = document.querySelector('script[data-is-logged-into-strava]');
 
-// generate iD imagery attributes for given Strava Heatmap type and color
-function resolveStravaHeatmapImagery(type, color) {
-	return {
-	  id: `StravaHeatmap${type}`,
-	  name: `Strava Heatmap (${type})`,
-	  description: `The Strava Heatmap (${type}) shows heat made by aggregated, public activities over the last year.`,
-	  template: `https://heatmap-external-{switch:a,b,c}.strava.com/tiles/${type.toLowerCase()}/${color.toLowerCase()}/{zoom}/{x}/{y}.png?v=19`,
-	  terms_url: "https://wiki.openstreetmap.org/wiki/Strava#Data_Permission_-_Allowed_for_tracing!",
-	  zoomExtent: [0, 15],
-	  overlay: true,
-	  alpha: 0.5
-	};
+//generate iD imagery attributes for given Strava Heatmap type and color
+function resolveStravaHeatmapImagery() {
+	const stravaImageryData = [];
+	const stravaImageryTypes = ["Ride", "Run", "Water", "Winter", "All"];
+	if (!stravaScript) {
+		return [];
+	}
+	const isLoggedIn = stravaScript.dataset.isLoggedIntoStrava;
+	const stravaColor = stravaScript.dataset.stravaColor;
+
+	for (const imageryType of stravaImageryTypes) {
+		const desc = (isLoggedIn === "true") ? `The Strava Heatmap (${imageryType}) shows heat made by aggregated, public activities over the last year.` : `You must be logged into Strava to use this imagery`;
+		stravaImageryData.push({
+			id: `StravaHeatmap${imageryType}`,
+			name: `Strava Heatmap (${imageryType})`,
+			description: desc,
+			template: `https://heatmap-external-{switch:a,b,c}.strava.com/tiles/${imageryType.toLowerCase()}/${stravaColor}/{zoom}/{x}/{y}.png?v=19`,
+			terms_url: "https://wiki.openstreetmap.org/wiki/Strava#Data_Permission_-_Allowed_for_tracing!",
+			zoomExtent: [0, 15],
+			overlay: true,
+		});
+	}
+	return stravaImageryData;
   }
   
   // override global fetch function used by iD to retrieve imagery json file
@@ -51,14 +63,43 @@ function resolveStravaHeatmapImagery(type, color) {
 		.json()
 		.then(data => [
 		  ...data,
-		  resolveStravaHeatmapImagery('Ride', 'Hot'),
-		  resolveStravaHeatmapImagery('Run', 'Hot'),
-		  resolveStravaHeatmapImagery('Water', 'Hot'),
-		  resolveStravaHeatmapImagery('Winter', 'Hot'),
-		  resolveStravaHeatmapImagery('All', 'Hot'),
+		  ...resolveStravaHeatmapImagery(),
 		]);
   
 	  response.json = json;
 	}
 	return response;
   };
+
+  function updateStravaCheckboxes(records, observer) {
+	document.querySelectorAll('.layer-overlay-list li label').forEach(e => {
+		const title = e.querySelector('span');
+		if (!title) {
+			return;
+		}
+		if (title.textContent.startsWith("Strava")) {
+			e.querySelector('input').disabled = true;
+		}
+	})
+}
+
+if (stravaScript && stravaScript.dataset.isLoggedIntoStrava === "false") {
+	const overlayListObserver = new MutationObserver(updateStravaCheckboxes);
+
+	const checkForOverlays = setInterval(() => {
+		const overlayList = document.querySelector('.layer-overlay-list');
+		if (overlayList) {
+			clearInterval(checkForOverlays);
+			overlayListObserver.observe(overlayList, {childList: true, subtree: true, characterData: true});
+			overlayList.querySelectorAll('li label').forEach(e => {
+				const title = e.querySelector('span');
+				if (!title) {
+					return;
+				}
+				if (title.textContent.startsWith("Strava")) {
+					e.querySelector('input').disabled = true;
+				}
+			})
+		}
+	}, 2000)	
+}

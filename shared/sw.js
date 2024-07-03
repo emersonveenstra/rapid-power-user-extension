@@ -78,7 +78,8 @@ async function requestStravaCredentials() {
 	});
 
 	stravaCredentials = credentials;
-	if (credentials === null) {
+	const { enableStrava } = await chrome.storage.sync.get('enableStrava');
+	if (credentials === null && enableStrava) {
 		chrome.action.setIcon({ path: "icons/rapid-strava-48.png" });
 		chrome.action.setTitle({ title: "Log Into Strava"});
 	} else {
@@ -97,8 +98,14 @@ async function clearStravaCredentials() {
 	});
 
 	stravaCredentials = null;
-	chrome.action.setIcon({ path: "icons/rapid-strava-48.png" });
-	chrome.action.setTitle({ title: "Log Into Strava"});
+	const { enableStrava } = await chrome.storage.sync.get('enableStrava');
+	if (enableStrava) {
+		chrome.action.setIcon({ path: "icons/rapid-strava-48.png" });
+		chrome.action.setTitle({ title: "Log Into Strava"});
+	} else {
+		chrome.action.setIcon({ path: "icons/rapid-48.png" });
+		chrome.action.setTitle({ title: "Start Mapping"});
+	}
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -113,8 +120,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 });
 
-chrome.action.onClicked.addListener((tab) => {
-	if (stravaCredentials === null) {
+chrome.action.onClicked.addListener(async (tab) => {
+	const { enableStrava } = await chrome.storage.sync.get('enableStrava');
+	if (stravaCredentials === null && enableStrava) {
 		chrome.tabs.create({
 			url: 'https://www.strava.com/maps/global-heatmap'
 		});
@@ -126,4 +134,18 @@ chrome.action.onClicked.addListener((tab) => {
 	}
 });
 
-requestStravaCredentials();
+(async () => {
+	const { enableStrava } = await chrome.storage.sync.get('enableStrava');
+	if (enableStrava === undefined) {
+		await chrome.storage.sync.set({
+			enableStrava: true
+		});
+	}
+	const { stravaColor } = await chrome.storage.sync.get('stravaColor');
+	if (stravaColor === undefined) {
+		await chrome.storage.sync.set({
+			stravaColor: 'hot'
+		});
+	}
+	await requestStravaCredentials();
+})();

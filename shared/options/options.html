@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+	<style>
+		.saved {
+			opacity: 1;
+			color: green;
+		}
+		.saved.hidden {
+			opacity: 0;
+			transition: opacity 0.5s;
+		}
+	</style>
+  </head>
+
+  <body>
+    <form>
+		<label>Enable Strava <input type="checkbox" id="enable-strava" checked></label>
+		<div class="strava-options">
+			<label for="strava-color">Strava Heatmap Color</label>
+			<select id="strava-color">
+				<option value="hot" selected>Hot</option>
+				<option value="blue">Blue</option>
+				<option value="gray">Gray</option>
+				<option value="bluered">Blue Red</option>
+				<option value="purple">Purple</option>
+				<option value="orange">Orange</option>
+			</select>
+		</div>
+      <button type="submit">Save</button>
+	  <span class="saved hidden">Saved!</span>
+    </form>
+	<script src="options.js"></script>
+  </body>
+</html>

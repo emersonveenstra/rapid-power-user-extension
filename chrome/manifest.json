@@ -14,9 +14,13 @@
 		"48": "icons/rapid-48.png",
 		"128": "icons/rapid-128.png"
 	},
+	"options_ui": {
+		"page": "options/options.html"
+	},
 	"permissions": [
 		"cookies",
-		"declarativeNetRequest"
+		"declarativeNetRequest",
+		"storage"
 	],
 	"host_permissions": [
 		"*://*.strava.com/*",

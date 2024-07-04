@@ -3,7 +3,7 @@
 A Chrome and Firefox extension to seamlessly integrate Rapid as your primary OSM web editor. Currently does two things:
 
 1. Redirects the OSM.org Edit button to open in Rapid
-2. Integrates Strava Heatmap overlays into Rapid (credit to the original [id-strava-heatmap extension](https://github.com/cmoffroad/id-strava-heatmap-extension) for some of the code)
+2. Integrates Strava Heatmap overlays into Rapid (credit to the original [id-strava-heatmap extension](https://github.com/cmoffroad/id-strava-heatmap-extension) for some of the code) and lets you choose which heatmap color to use.
 
 Should work on all Chromium-based and Gecko-based browsers that support Manifest V3 extensions, I test it on Firefox, Brave, Vivaldi, and Chrome. 
 
@@ -19,9 +19,14 @@ There is also a `local/` directory for loading into Chromium-based browsers that
 
 ## Using
 
-When installed, the plugin will show up in your toolbar somewhere (it may be hidden behind an overflow icon at first). If the plugin icon is orange, then you need to log into Strava by clicking the plugin icon. Once you're logged in to Strava, load [the heatmap](https://www.strava.com/maps/global-heatmap), the icon will turn pink (may need to refresh the page one time) and Strava support is enabled.
+When installed, the plugin will show up in your toolbar somewhere (it may be hidden behind an overflow icon at first). If the plugin icon is orange, then you need to log into Strava by clicking the plugin icon. Once you're logged in to Strava, load [the heatmap](https://www.strava.com/maps/global-heatmap), the icon will turn pink (may need to refresh the page one time) and Strava support is enabled on the next Rapid page load.
 
-If you don't want to use Strava you can just hide the plugin icon, it will still redirect everything from iD to Rapid without being logged into Strava.
+If you don't want to use Strava, you can open the extension options (Chrome: right click the plugin icon and click Options; FF: right click on the icon, click Manage Extension and then the Preferences tab) and uncheck "Enable Strava" to hide all the Strava integration features.
+
+## Customizing
+
+The extension has an option to change the heatmap color to any of the six supported Strava colors.
+
 
 ## Known bugs
 - Sometimes you need to refresh the page after logging in to Strava for the plugin to recognize the cookies

@@ -8,7 +8,10 @@ chrome.runtime.sendMessage({"type": 'requestStravaCredentials'}).then(async () =
 		displayImageryScript.src = chrome.runtime.getURL('scripts/display-strava-imagery.js');
 		displayImageryScript.dataset.isLoggedIntoStrava = (stravaCredentials.credentials !== null) ? "true" : "false";
 		const { stravaColor } = await chrome.storage.sync.get('stravaColor');
+		const { heatmapOpacity } = await chrome.storage.sync.get('heatmapOpacity');
+		const heatmapAlpha = parseInt(heatmapOpacity) / 100;
 		displayImageryScript.dataset.stravaColor = stravaColor;
+		displayImageryScript.dataset.heatmapAlpha = heatmapAlpha;
 		document.documentElement.appendChild(displayImageryScript);
 	});
 });

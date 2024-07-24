@@ -12,14 +12,28 @@
 			opacity: 0;
 			transition: opacity 0.5s;
 		}
+		form p {
+			font-weight: bold;
+			margin-bottom: 5px;
+		}
+		form label:not([for=strava-color]) {
+			display: block;
+		}
 	</style>
   </head>
 
   <body>
     <form>
-		<label>Enable Strava <input type="checkbox" id="enable-strava" checked></label>
+		<div class="rapid-options">
+			<p>Rapid Options</p>
+			<label>Use canary version: <input type="checkbox" id="use-canary"></label>
+			<label>Hide AI overlays on initial page load: <input type="checkbox" id="hide-ai"></label>
+			<label>Enable Poweruser Mode: <input type="checkbox" id="poweruser-mode"></label>
+		</div>
 		<div class="strava-options">
-			<label for="strava-color">Strava Heatmap Color</label>
+			<p>Strava Heatmap Options:</p>
+			<label>Enable Heatmap: <input type="checkbox" id="enable-strava" checked></label>
+			<label for="strava-color">Heatmap Color</label>
 			<select id="strava-color">
 				<option value="hot" selected>Hot</option>
 				<option value="blue">Blue</option>
@@ -28,6 +42,7 @@
 				<option value="purple">Purple</option>
 				<option value="orange">Orange</option>
 			</select>
+			<label>Heatmap Opacity (Rapid 2.3.3+ only): <input type="number" id="heatmap-opacity" value="100" min="0" max="100">%</label>
 		</div>
       <button type="submit">Save</button>
 	  <span class="saved hidden">Saved!</span>

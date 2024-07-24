@@ -32,6 +32,7 @@ function resolveStravaHeatmapImagery() {
 	}
 	const isLoggedIn = stravaScript.dataset.isLoggedIntoStrava;
 	const stravaColor = stravaScript.dataset.stravaColor;
+	const heatmapAlpha = stravaScript.dataset.heatmapAlpha;
 
 	for (const imageryType of stravaImageryTypes) {
 		const desc = (isLoggedIn === "true") ? `The Strava Heatmap (${imageryType}) shows heat made by aggregated, public activities over the last year.` : `You must be logged into Strava to use this imagery`;
@@ -43,6 +44,7 @@ function resolveStravaHeatmapImagery() {
 			terms_url: "https://wiki.openstreetmap.org/wiki/Strava#Data_Permission_-_Allowed_for_tracing!",
 			zoomExtent: [0, 15],
 			overlay: true,
+			alpha: parseFloat(heatmapAlpha)
 		});
 	}
 	return stravaImageryData;
@@ -61,12 +63,24 @@ function resolveStravaHeatmapImagery() {
 	  const json = () => response
 		.clone()
 		.json()
-		.then(data => [
-		  ...data,
-		  ...resolveStravaHeatmapImagery(),
-		]);
+		.then(data => {
+			if (data instanceof Array) {
+				return [
+					...data,
+					...resolveStravaHeatmapImagery(),
+				]
+			} else {
+				return {
+					"_meta": data["_meta"],
+					"imagery": [
+						...data["imagery"],
+						...resolveStravaHeatmapImagery()
+					]
+				}
+			}
+		});
   
-	  response.json = json;
+		response.json = json;
 	}
 	return response;
   };

@@ -1,3 +1,2 @@
-rm -rf chrome/{icons,options,scripts,static_rules.json,sw.js} && cp -r shared/{icons,options,scripts,static_rules.json,sw.js} chrome/
-rm -rf firefox/{icons,options,scripts,static_rules.json,sw.js} && cp -r shared/{icons,options,scripts,static_rules.json,sw.js} firefox/
-rm -rf local/{icons,options,scripts,static_rules.json,sw.js} && cp -r shared/{icons,options,scripts,static_rules.json,sw.js} local/
+rm -rf chrome/{icons,lib,options,scripts,static_rules.json,sw.js} && cp -r shared/{icons,lib,options,scripts,static_rules.json,sw.js} chrome/
+rm -rf firefox/{icons,lib,options,scripts,static_rules.json,sw.js} && cp -r shared/{icons,lib,options,scripts,static_rules.json,sw.js} firefox/

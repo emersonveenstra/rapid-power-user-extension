@@ -23,31 +23,39 @@
 
 export class Strava {
 	constructor() {
-		this.stravaCredentials = null;
 		chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			if (message["type"] === 'requestStravaCredentials') {
-				this.requestStravaCredentials();
+				this.requestStravaCredentials().then(credentials => sendResponse(credentials));
 			}
 			if (message["type"] === 'clearStravaCredentials') {
-				this.clearStravaCredentials();
-			}
-			if (message["type"] === 'getStravaCredentials') {
-				sendResponse({credentials: this.stravaCredentials});
+				this.clearStravaCredentials().then(() => sendResponse(true));
 			}
 		});
 	}
 
 	async setStravaDefaults() {
-		const { enableStrava } = await chrome.storage.sync.get('enableStrava');
+		const { enableStrava } = await chrome.storage.local.get('enableStrava');
 		if (enableStrava === undefined) {
-			await chrome.storage.sync.set({
+			await chrome.storage.local.set({
 				enableStrava: true
 			});
 		}
-		const { stravaColor } = await chrome.storage.sync.get('stravaColor');
+		const { stravaColor } = await chrome.storage.local.get('stravaColor');
 		if (stravaColor === undefined) {
-			await chrome.storage.sync.set({
+			await chrome.storage.local.set({
 				stravaColor: 'hot'
+			});
+		}
+		const { heatmapOpacity } = await chrome.storage.local.get('heatmapOpacity');
+		if (heatmapOpacity === undefined) {
+			await chrome.storage.local.set({
+				heatmapOpacity: '100'
+			});
+		}
+		const { maxZoomLevel } = await chrome.storage.local.get('maxZoomLevel');
+		if (maxZoomLevel === undefined) {
+			await chrome.storage.local.set({
+				maxZoomLevel: '20'
 			});
 		}
 	}
@@ -86,8 +94,7 @@ export class Strava {
 			removeRuleIds: [ 1 ]
 		});
 	
-		this.stravaCredentials = null;
-		const { enableStrava } = await chrome.storage.sync.get('enableStrava');
+		const { enableStrava } = await chrome.storage.local.get('enableStrava');
 		if (enableStrava) {
 			chrome.action.setIcon({ path: "icons/rapid-strava-48.png" });
 			chrome.action.setTitle({ title: "Log Into Strava"});
@@ -125,8 +132,7 @@ export class Strava {
 			] : []
 		});
 	
-		this.stravaCredentials = credentials;
-		const { enableStrava } = await chrome.storage.sync.get('enableStrava');
+		const { enableStrava } = await chrome.storage.local.get('enableStrava');
 		if (credentials === null && enableStrava) {
 			chrome.action.setIcon({ path: "icons/rapid-strava-48.png" });
 			chrome.action.setTitle({ title: "Log Into Strava"});
@@ -134,5 +140,6 @@ export class Strava {
 			chrome.action.setIcon({ path: "icons/rapid-48.png" });
 			chrome.action.setTitle({ title: "Start Mapping"});
 		}
+		return credentials;
 	}
 }

@@ -19,7 +19,8 @@
 		"48": "icons/rapid-48.png"
 	},
 	"options_ui": {
-		"page": "options/options.html"
+		"page": "options/options.html",
+		"open_in_tab": true
 	},
 	"permissions": [
 		"cookies",
@@ -39,6 +40,7 @@
 		{
 			"matches": [
 				"https://rapideditor.org/edit*",
+				"https://rapideditor.org/rapid*",
 				"https://rapideditor.org/canary*"
 			],
 			"js": [
@@ -49,7 +51,7 @@
 		},
 		{
 			"matches": [
-				"https://www.strava.com/*"
+				"https://www.strava.com/maps/global-heatmap*"
 			],
 			"js": [
 				"scripts/refresh-cookies.js"

@@ -4,15 +4,18 @@ import { Strava } from './lib/Strava.js'
 const strava = new Strava();
 
 chrome.action.onClicked.addListener(async (tab) => {
-	const { enableStrava } = await chrome.storage.sync.get('enableStrava');
-	if (strava.stravaCredentials === null && enableStrava) {
+	const { enableStrava } = await chrome.storage.local.get('enableStrava');
+	const { useCanary } = await chrome.storage.local.get('useCanary');
+	const rapidPath = (useCanary) ? "canary" : "edit";
+	const stravaCredentials = await strava.requestStravaCredentials();
+	if (stravaCredentials === null && enableStrava) {
 		chrome.tabs.create({
 			url: 'https://www.strava.com/maps/global-heatmap'
 		});
 	}
 	else {
 		chrome.tabs.create({
-			url: 'https://rapideditor.org/edit'
+			url: `https://rapideditor.org/${rapidPath}`
 		});
 	}
 });

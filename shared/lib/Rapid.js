@@ -1,6 +1,5 @@
 export class Rapid {
 	constructor() {
-		this.rapidPath = "edit"
 		chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			if (message["type"] === 'refreshRapidRules') {
 				this.updateDynamicRules();
@@ -9,35 +8,78 @@ export class Rapid {
 	}
 
 	async setRapidDefaults() {
-		const { useCanary } = await chrome.storage.sync.get('useCanary');
+		const { useCanary } = await chrome.storage.local.get('useCanary');
 		if (useCanary === undefined) {
-			await chrome.storage.sync.set({
+			await chrome.storage.local.set({
 				useCanary: false
 			});
 		}
-		const { hideAI } = await chrome.storage.sync.get('hideAI');
-		if (hideAI === undefined) {
-			await chrome.storage.sync.set({
-				hideAI: false
+		const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
+		if (poweruserMode === undefined) {
+			await chrome.storage.local.set({
+				poweruserMode: false
 			});
 		}
-		const { poweruserMode } = await chrome.storage.sync.get('poweruserMode');
-		if (poweruserMode === undefined) {
-			await chrome.storage.sync.set({
-				poweruserMode: false
+		const { showBuildings } = await chrome.storage.local.get('showBuildings');
+		if (showBuildings === undefined) {
+			await chrome.storage.local.set({
+				showBuildings: true
+			});
+		}
+		const { showRoads } = await chrome.storage.local.get('showRoads');
+		if (showRoads === undefined) {
+			await chrome.storage.local.set({
+				showRoads: true
+			});
+		}
+		const { extraDatasets } = await chrome.storage.local.get('extraDatasets');
+		if (extraDatasets === undefined) {
+			await chrome.storage.local.set({
+				extraDatasets: ""
+			});
+		}
+		const { defaultBackground } = await chrome.storage.local.get('defaultBackground');
+		if (defaultBackground === undefined) {
+			await chrome.storage.local.set({
+				defaultBackground: "Bing"
+			});
+		}
+		const { disableFeatures } = await chrome.storage.local.get('disableFeatures');
+		if (disableFeatures === undefined) {
+			await chrome.storage.local.set({
+				disableFeatures: "boundaries"
 			});
 		}
 	}
 
 	async updateDynamicRules() {
-		const { useCanary } = await chrome.storage.sync.get('useCanary');
-		const { hideAI } = await chrome.storage.sync.get('hideAI');
-		const { poweruserMode } = await chrome.storage.sync.get('poweruserMode');
-		let hashSettings = (hideAI) ? "&datasets=" : "";
-		if (poweruserMode) {
-			hashSettings = `${hashSettings}&poweruser=true`
+		const { useCanary } = await chrome.storage.local.get('useCanary');
+		const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
+		const { showBuildings } = await chrome.storage.local.get('showBuildings');
+		const { showRoads } = await chrome.storage.local.get('showRoads');
+		const { extraDatasets } = await chrome.storage.local.get('extraDatasets');
+		const { defaultBackground } = await chrome.storage.local.get('defaultBackground');
+		const { disableFeatures } = await chrome.storage.local.get('disableFeatures');
+		const datasets = []
+		if (showRoads) {
+			datasets.push("fbRoads")
 		}
-		this.rapidPath = (useCanary) ? "canary" : "edit";
+		if (showBuildings) {
+			datasets.push("msBuildings")
+		}
+		if (extraDatasets != "") {
+			datasets.push(extraDatasets)
+		}
+		const queryParams = [
+			`datasets=${datasets.join(",")}`,
+			`background=${defaultBackground}`,
+			`disable_features=${disableFeatures}`
+		].join('&')
+		if (poweruserMode) {
+			queryParams = `${queryParams}&poweruser=true`
+		}
+		const rapidPath = (useCanary) ? "canary" : "edit";
+
 		chrome.declarativeNetRequest.updateDynamicRules({
 			removeRuleIds: [ 3,4,5,6,7 ],
 			addRules: [
@@ -51,7 +93,7 @@ export class Rapid {
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${this.rapidPath}#map=\\1${hashSettings}`
+							regexSubstitution: `https://rapideditor.org/${rapidPath}#map=\\1&${queryParams}`
 						},
 					}
 				},
@@ -59,13 +101,13 @@ export class Rapid {
 					id: 4,
 					priority: 1,
 					condition: {
-						regexFilter: "^https://www.openstreetmap.org/edit.*node=(\\d+)(.*)$",
+						regexFilter: "^https://www.openstreetmap.org/edit\\?node=(\\d+)(.*)$",
 						resourceTypes: ['main_frame'],
 					},
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${this.rapidPath}#id=n\\1${hashSettings}`
+							regexSubstitution: `https://rapideditor.org/${rapidPath}#id=n\\1&${queryParams}`
 						},
 					}
 				},
@@ -73,13 +115,13 @@ export class Rapid {
 					id: 5,
 					priority: 1,
 					condition: {
-						regexFilter: "^https://www.openstreetmap.org/edit.*way=(\\d+)(.*)$",
+						regexFilter: "^https://www.openstreetmap.org/edit\\?way=(\\d+)(.*)$",
 						resourceTypes: ['main_frame'],
 					},
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${this.rapidPath}#id=w\\1${hashSettings}`
+							regexSubstitution: `https://rapideditor.org/${rapidPath}#id=w\\1&${queryParams}`
 						},
 					}
 				},
@@ -87,13 +129,13 @@ export class Rapid {
 					id: 6,
 					priority: 1,
 					condition: {
-						regexFilter: "^https://www.openstreetmap.org/edit.*relation=(\\d+)(.*)$",
+						regexFilter: "^https://www.openstreetmap.org/edit\\?relation=(\\d+)(.*)$",
 						resourceTypes: ['main_frame'],
 					},
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${this.rapidPath}#id=r\\1${hashSettings}`
+							regexSubstitution: `https://rapideditor.org/${rapidPath}#id=r\\1&${queryParams}`
 						},
 					}
 				},
@@ -101,13 +143,13 @@ export class Rapid {
 					id: 7,
 					priority: 1,
 					condition: {
-						regexFilter: "^https://www.openstreetmap.org/edit.*changeset=\\d+#map=(.*)$",
+						regexFilter: "^https://www.openstreetmap.org/edit\\?changeset=\\d+#map=(.*)$",
 						resourceTypes: ['main_frame'],
 					},
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${this.rapidPath}#map=\\1${hashSettings}`
+							regexSubstitution: `https://rapideditor.org/${rapidPath}#map=\\1&${queryParams}`
 						},
 					}
 				},

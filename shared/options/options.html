@@ -2,212 +2,62 @@
 
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-	<style>
-		:root {
-			--rapid-purple: rgb(218, 38, 211);
-			--strava-orange: rgb(252, 82, 1);
-		}
-		body {
-			max-width: 1200px;
-			width: 100%;
-			margin: 0 auto;
-		}
-		.saved {
-			opacity: 1;
-			color: green;
-		}
-		.saved.hidden {
-			opacity: 0;
-			transition: opacity 0.5s;
-		}
-		form label:not([for=strava-color]) {
-			display: block;
-		}
-		form div div {
-			display: flex;
-		}
-		.title, .description {
-			display: block;
-		}
-		.checkbox-wrapper-14 input[type=checkbox] {
-			--active: var(--rapid-purple);
-			--active-inner: #fff;
-			--focus: 2px rgba(218, 38, 211, .3);
-			--border: #BBC1E1;
-			--border-hover: var(--rapid-purple);
-			--background: #fff;
-			--disabled: #F6F8FF;
-			--disabled-inner: #E1E6F9;
-			-webkit-appearance: none;
-			-moz-appearance: none;
-			appearance: none;
-			height: 21px;
-			outline: none;
-			display: inline-block;
-			vertical-align: top;
-			position: relative;
-			margin: 0;
-			cursor: pointer;
-			border: 1px solid var(--bc, var(--border));
-			background: var(--b, var(--background));
-			transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:after {
-			content: "";
-			display: block;
-			left: 0;
-			top: 0;
-			position: absolute;
-			transition: transform var(--d-t, 0.3s) var(--d-t-e, ease), opacity var(--d-o, 0.2s);
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:checked {
-			--b: var(--active);
-			--bc: var(--active);
-			--d-o: .3s;
-			--d-t: .6s;
-			--d-t-e: cubic-bezier(.2, .85, .32, 1.2);
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:disabled {
-			--b: var(--disabled);
-			cursor: not-allowed;
-			opacity: 0.9;
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:disabled:checked {
-			--b: var(--disabled-inner);
-			--bc: var(--border);
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:disabled + label {
-			cursor: not-allowed;
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:hover:not(:checked):not(:disabled) {
-			--bc: var(--border-hover);
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:focus {
-			box-shadow: 0 0 0 var(--focus);
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:not(.switch) {
-			width: 21px;
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:not(.switch):after {
-			opacity: var(--o, 0);
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:not(.switch):checked {
-			--o: 1;
-		}
-		.checkbox-wrapper-14 input[type=checkbox] + label {
-			display: inline-block;
-			vertical-align: middle;
-			cursor: pointer;
-			margin-left: 4px;
-		}
-
-		.checkbox-wrapper-14 input[type=checkbox]:not(.switch) {
-			border-radius: 7px;
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:not(.switch):after {
-			width: 5px;
-			height: 9px;
-			border: 2px solid var(--active-inner);
-			border-top: 0;
-			border-left: 0;
-			left: 7px;
-			top: 4px;
-			transform: rotate(var(--r, 20deg));
-		}
-		.checkbox-wrapper-14 input[type=checkbox]:not(.switch):checked {
-			--r: 43deg;
-		}
-		.checkbox-wrapper-14 input[type=checkbox].switch {
-			width: 38px;
-			border-radius: 11px;
-		}
-		.checkbox-wrapper-14 input[type=checkbox].switch:after {
-			left: 2px;
-			top: 2px;
-			border-radius: 50%;
-			width: 17px;
-			height: 17px;
-			background: var(--ab, var(--border));
-			transform: translateX(var(--x, 0));
-		}
-		.checkbox-wrapper-14 input[type=checkbox].switch:checked {
-			--ab: var(--active-inner);
-			--x: 17px;
-		}
-		.checkbox-wrapper-14 input[type=checkbox].switch:disabled:not(:checked):after {
-			opacity: 0.6;
-		}
-
-		.checkbox-wrapper-14 * {
-			box-sizing: inherit;
-		}
-		.checkbox-wrapper-14 *:before,
-		.checkbox-wrapper-14 *:after {
-			box-sizing: inherit;
-		}
-	</style>
+    <meta charset="utf-8">
+	<link rel="stylesheet" href="options.css">
   </head>
 
   <body>
 	<h1>Options</h1>
+	<p>Detailed descriptions of each option can be found <a href="https://github.com/emersonveenstra/rapid-power-user-extension/wiki/Options-page">here</a>.</p>
     <form>
 		<div class="rapid-options">
 			<h2>Rapid Options</h2>
-			<div>
-				<div class="checkbox-wrapper-14">
-					<label for="use-canary">Use canary version</label>
-					<input id="use-canary" type="checkbox" class="switch">
-				</div>
+			<p>Changing any of these will take effect the next time you click the OSM edit button.</p>
+			<div class="slider-wrapper">
+				<label for="use-canary">Use canary version</label>
+				<input id="use-canary" type="checkbox" class="switch">
 			</div>
-			<div>
-				<div class="checkbox-wrapper-14">	  
-					<label for="poweruser-mode">Enable Poweruser Mode</label>
-					<input id="poweruser-mode" type="checkbox" class="switch">
-				</div>
+
+			<div class="slider-wrapper">	  
+				<label for="poweruser-mode">Enable Poweruser Mode</label>
+				<input id="poweruser-mode" type="checkbox" class="switch">
 			</div>
-			<div>
-				<div class="checkbox-wrapper-14">  
-					<label for="show-buildings">Show AI Buildings</label>
-					<input id="show-buildings" type="checkbox" class="switch">
-				</div>
+
+			<div class="slider-wrapper">  
+				<label for="show-buildings">Show AI Buildings</label>
+				<input id="show-buildings" type="checkbox" class="switch">
 			</div>
-			<div>
-				<div class="checkbox-wrapper-14">
-					<label for="show-roads">Show AI Roads</label>
-					<input id="show-roads" type="checkbox" class="switch">
-				</div>
+
+			<div class="slider-wrapper">
+				<label for="show-roads">Show AI Roads</label>
+				<input id="show-roads" type="checkbox" class="switch">
 			</div>
-			<div>
-				<div class="checkbox-wrapper-14">
-					<label for="extra-datasets">Extra datasets to load</label>
-					<input type="text" id="extra-datasets">
-				</div>
+
+			<div class="slider-wrapper">
+				<label for="extra-datasets">Extra datasets to load</label>
+				<input type="text" id="extra-datasets">
 			</div>
-			<div>
-				<div class="checkbox-wrapper-14">
-					<label for="default-background">Default background layer</label>
-					<input type="text" id="default-background">
-				</div>
+
+			<div class="slider-wrapper">
+				<label for="default-background">Default background layer</label>
+				<input type="text" id="default-background">
 			</div>
-			<div>
-				<div class="checkbox-wrapper-14">
-					<label for="disable-features">Disable Features</label>
-					<input type="text" id="disable-features">
-				</div>
+
+			<div class="slider-wrapper">
+				<label for="disable-features">Disable Features</label>
+				<input type="text" id="disable-features">
 			</div>
 		</div>
 		<div class="strava-options">
 			<h2>Strava Heatmap Options:</h2>
-			<div>
-				<div class="checkbox-wrapper-14">  
-					<label for="enable-strava">Enable Strava</label>
-					<input id="enable-strava" type="checkbox" class="switch">
-				</div>
+			<p>Changing any of these will require reloading Rapid.</p>
+			<div class="slider-wrapper">
+				<label for="enable-strava">Enable Strava</label>
+				<input id="enable-strava" type="checkbox" class="switch">
 			</div>
-			<div>
+			<div class="slider-wrapper">
 				<label for="strava-color">Heatmap Color</label>
-				<p>
+				<span>
 					<select id="strava-color">
 						<option value="hot" selected>Hot</option>
 						<option value="blue">Blue</option>
@@ -216,19 +66,20 @@
 						<option value="purple">Purple</option>
 						<option value="orange">Orange</option>
 					</select>
-				</p>
+				</span>
 			</div>
-			<div>
+			<div class="slider-wrapper">
 				<label for="heatmap-opacity">Heatmap Opacity:</label>
-				<p>
+				<span>
 					<input type="number" id="heatmap-opacity" value="100" min="0" max="100">%
-				</p>
+				</span>
 			</div>
-			<div>
+		
+			<div class="slider-wrapper">
 				<label for="max-zoom-level">Max Zoom level</label>
-				<p>
+				<span>
 					z<input type="number" id="max-zoom-level" value="20" min="15" max="24">
-				</p>
+				</span>
 			</div>
 		</div>
       <button type="submit">Save</button>

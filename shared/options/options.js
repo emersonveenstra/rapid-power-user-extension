@@ -33,6 +33,15 @@ async function saveOptions(e) {
 		document.querySelector('.saved').classList.add('hidden');
 	}, 3000)
 	chrome.runtime.sendMessage({"type": 'refreshRapidRules'})
+	chrome.runtime.sendMessage({"type": 'requestStravaCredentials'})
+}
+
+function toggleStravaOptions() {
+	const enableStrava = document.querySelector('#enable-strava').checked;
+
+	document.querySelector('#strava-color').disabled = !enableStrava;
+	document.querySelector('#heatmap-opacity').disabled = !enableStrava;
+	document.querySelector('#max-zoom-level').disabled = !enableStrava;
 }
 async function restoreOptions() {
 	const { useCanary } = await chrome.storage.local.get('useCanary');
@@ -60,8 +69,9 @@ async function restoreOptions() {
 	document.querySelector('#strava-color').value = stravaColor ?? 'hot';
 	document.querySelector('#heatmap-opacity').value = heatmapOpacity ?? '100';
 	document.querySelector('#max-zoom-level').value = maxZoomLevel ?? '20';
-
+	toggleStravaOptions();
 }
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 document.querySelector("form").addEventListener("submit", saveOptions);
+document.querySelector('#enable-strava').addEventListener('change', toggleStravaOptions);

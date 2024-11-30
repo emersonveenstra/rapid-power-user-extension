@@ -111,7 +111,7 @@ export class Strava {
 	
 		const error = !keyPairId || !policy || !signature;
 		const credentials = error ? null : { keyPairId, policy, signature };
-	
+
 		chrome.declarativeNetRequest.updateDynamicRules({
 			removeRuleIds: [ 1 ],
 			addRules: credentials ? [

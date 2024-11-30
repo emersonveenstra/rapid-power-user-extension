@@ -70,7 +70,7 @@ export class Rapid {
 		if (extraDatasets != "") {
 			datasets.push(extraDatasets)
 		}
-		const queryParams = [
+		let queryParams = [
 			`datasets=${datasets.join(",")}`,
 			`background=${defaultBackground}`,
 			`disable_features=${disableFeatures}`
@@ -81,7 +81,7 @@ export class Rapid {
 		const rapidPath = (useCanary) ? "canary" : "edit";
 
 		chrome.declarativeNetRequest.updateDynamicRules({
-			removeRuleIds: [ 3,4,5,6,7 ],
+			removeRuleIds: [ 3,4,5,6,7,8 ],
 			addRules: [
 				{
 					id: 3,
@@ -152,6 +152,20 @@ export class Rapid {
 							regexSubstitution: `https://rapideditor.org/${rapidPath}#map=\\1&${queryParams}`
 						},
 					}
+				},
+				{
+					id: 8,
+					priority: 1,
+					condition: {
+						regexFilter: "^https://www.openstreetmap.org/edit\\?note=\\d+#map=(.*)$",
+						resourceTypes: ['main_frame'],
+					},
+					action: {
+						type: 'redirect',
+						redirect: {
+							regexSubstitution: `https://rapideditor.org/${rapidPath}#map=\\1&${queryParams}`
+						},
+					},
 				},
 			]
 		});

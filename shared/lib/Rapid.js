@@ -52,7 +52,8 @@ export class Rapid {
 		}
 	}
 
-	async updateDynamicRules() {
+
+	async getRapidBaseURL() {
 		const { useCanary } = await chrome.storage.local.get('useCanary');
 		const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
 		const { showBuildings } = await chrome.storage.local.get('showBuildings');
@@ -79,6 +80,12 @@ export class Rapid {
 			queryParams = `${queryParams}&poweruser=true`
 		}
 		const rapidPath = (useCanary) ? "canary" : "edit";
+		return `https://rapideditor.org/${rapidPath}#${queryParams}`;
+	}
+
+
+	async updateDynamicRules() {
+		const rapidBaseURL = await this.getRapidBaseURL();
 
 		chrome.declarativeNetRequest.updateDynamicRules({
 			removeRuleIds: [ 3,4,5,6,7,8 ],
@@ -93,7 +100,7 @@ export class Rapid {
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${rapidPath}#map=\\1&${queryParams}`
+							regexSubstitution: `${rapidBaseURL}&map=\\1`
 						},
 					}
 				},
@@ -107,7 +114,7 @@ export class Rapid {
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${rapidPath}#id=n\\1&${queryParams}`
+							regexSubstitution: `${rapidBaseURL}&id=n\\1`
 						},
 					}
 				},
@@ -121,7 +128,7 @@ export class Rapid {
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${rapidPath}#id=w\\1&${queryParams}`
+							regexSubstitution: `${rapidBaseURL}&id=w\\1`
 						},
 					}
 				},
@@ -135,7 +142,7 @@ export class Rapid {
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${rapidPath}#id=r\\1&${queryParams}`
+							regexSubstitution: `${rapidBaseURL}&id=r\\1`
 						},
 					}
 				},
@@ -149,7 +156,7 @@ export class Rapid {
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${rapidPath}#map=\\1&${queryParams}`
+							regexSubstitution: `${rapidBaseURL}&map=\\1`
 						},
 					}
 				},
@@ -163,7 +170,7 @@ export class Rapid {
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `https://rapideditor.org/${rapidPath}#map=\\1&${queryParams}`
+							regexSubstitution: `${rapidBaseURL}&map=\\1`
 						},
 					},
 				},

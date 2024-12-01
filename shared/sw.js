@@ -4,9 +4,8 @@ import { Strava } from './lib/Strava.js'
 const strava = new Strava();
 
 chrome.action.onClicked.addListener(async (tab) => {
+	const rapidBaseURL = await rapid.getRapidBaseURL();
 	const { enableStrava } = await chrome.storage.local.get('enableStrava');
-	const { useCanary } = await chrome.storage.local.get('useCanary');
-	const rapidPath = (useCanary) ? "canary" : "edit";
 	const stravaCredentials = await strava.requestStravaCredentials();
 	if (stravaCredentials === null && enableStrava) {
 		chrome.tabs.create({
@@ -15,7 +14,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 	}
 	else {
 		chrome.tabs.create({
-			url: `https://rapideditor.org/${rapidPath}`
+			url: rapidBaseURL
 		});
 	}
 });

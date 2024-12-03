@@ -22,16 +22,7 @@
 // SOFTWARE.
 
 export class Strava {
-	constructor() {
-		chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-			if (message["type"] === 'requestStravaCredentials') {
-				this.requestStravaCredentials().then(credentials => sendResponse(credentials));
-			}
-			if (message["type"] === 'clearStravaCredentials') {
-				this.clearStravaCredentials().then(() => sendResponse(true));
-			}
-		});
-	}
+	constructor() {}
 
 	async setStravaDefaults() {
 		const { enableStrava } = await chrome.storage.local.get('enableStrava');

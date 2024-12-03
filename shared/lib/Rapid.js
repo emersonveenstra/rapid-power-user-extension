@@ -1,10 +1,48 @@
 export class Rapid {
-	constructor() {
-		chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-			if (message["type"] === 'refreshRapidRules') {
-				this.updateDynamicRules();
+	constructor() {}
+
+	async updateDynamicOptions(hash) {
+		const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
+		if (!updateDynamically) {
+			return;
+		}
+		const { otherParams } = await chrome.storage.local.get('otherParams');
+		const otherParamKeys = []
+		otherParams.split(',').forEach(param => otherParamKeys.push(param.split('=')[0]));
+		const newOtherParamsArray = [];
+		const hashArray = hash.slice(1).split('&');
+		for (const hash of hashArray) {
+			const [key, value] = hash.split('=', 2);
+			switch (key) {
+				case 'datasets':
+					const datasetArray = value.split(',');
+					await chrome.storage.local.set({
+						showRoads: datasetArray.includes('fbRoads'),
+						showBuildings: datasetArray.includes('msBuildings'),
+						extraDatasets: datasetArray.filter(dataset => dataset !== 'fbRoads' && dataset !== 'msBuildings').join(',')
+					});
+					break;
+				case 'background':
+					await chrome.storage.local.set({ backgroundLayer: value });
+					break;
+				case 'overlays':
+					await chrome.storage.local.set({ overlayLayers: value });
+					break;
+				case 'disable_features':
+					await chrome.storage.local.set({ disableFeatures: value });
+					break;
+				case 'poweruser':
+					await chrome.storage.local.set({ poweruserMode: value === 'true' });
+					break;
+				default:
+					if (otherParamKeys.includes(key)) {
+						newOtherParamsArray.push(`${key}=${value}`);
+					}
+					break;
 			}
-		});
+			await chrome.storage.local.set({ otherParams: newOtherParamsArray.join(',') });
+		}
+		this.updateDynamicRules();
 	}
 
 	async setRapidDefaults() {
@@ -12,6 +50,12 @@ export class Rapid {
 		if (useCanary === undefined) {
 			await chrome.storage.local.set({
 				useCanary: false
+			});
+		}
+		const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
+		if (updateDynamically === undefined) {
+			await chrome.storage.local.set({
+				updateDynamically: false
 			});
 		}
 		const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
@@ -38,16 +82,28 @@ export class Rapid {
 				extraDatasets: ""
 			});
 		}
-		const { defaultBackground } = await chrome.storage.local.get('defaultBackground');
-		if (defaultBackground === undefined) {
+		const { backgroundLayer } = await chrome.storage.local.get('backgroundLayer');
+		if (backgroundLayer === undefined) {
 			await chrome.storage.local.set({
-				defaultBackground: "Bing"
+				backgroundLayer: "Bing"
+			});
+		}
+		const { overlayLayers } = await chrome.storage.local.get('overlayLayers');
+		if (overlayLayers === undefined) {
+			await chrome.storage.local.set({
+				overlayLayers: ""
 			});
 		}
 		const { disableFeatures } = await chrome.storage.local.get('disableFeatures');
 		if (disableFeatures === undefined) {
 			await chrome.storage.local.set({
 				disableFeatures: "boundaries"
+			});
+		}
+		const { otherParams } = await chrome.storage.local.get('otherParams');
+		if (otherParams === undefined) {
+			await chrome.storage.local.set({
+				otherParams: ""
 			});
 		}
 	}
@@ -59,8 +115,10 @@ export class Rapid {
 		const { showBuildings } = await chrome.storage.local.get('showBuildings');
 		const { showRoads } = await chrome.storage.local.get('showRoads');
 		const { extraDatasets } = await chrome.storage.local.get('extraDatasets');
-		const { defaultBackground } = await chrome.storage.local.get('defaultBackground');
+		const { backgroundLayer } = await chrome.storage.local.get('backgroundLayer');
+		const { overlayLayers } = await chrome.storage.local.get('overlayLayers');
 		const { disableFeatures } = await chrome.storage.local.get('disableFeatures');
+		const { otherParams } = await chrome.storage.local.get('otherParams');
 		const datasets = []
 		if (showRoads) {
 			datasets.push("fbRoads")
@@ -73,8 +131,10 @@ export class Rapid {
 		}
 		let queryParams = [
 			`datasets=${datasets.join(",")}`,
-			`background=${defaultBackground}`,
-			`disable_features=${disableFeatures}`
+			`background=${backgroundLayer}`,
+			`overlays=${overlayLayers}`,
+			`disable_features=${disableFeatures}`,
+			otherParams
 		].join('&')
 		if (poweruserMode) {
 			queryParams = `${queryParams}&poweruser=true`
@@ -164,13 +224,13 @@ export class Rapid {
 					id: 8,
 					priority: 1,
 					condition: {
-						regexFilter: "^https://www.openstreetmap.org/edit\\?note=\\d+#map=(.*)$",
+						regexFilter: "^https://www.openstreetmap.org/edit\\?note=(\\d+)(.*)$",
 						resourceTypes: ['main_frame'],
 					},
 					action: {
 						type: 'redirect',
 						redirect: {
-							regexSubstitution: `${rapidBaseURL}&map=\\1`
+							regexSubstitution: `${rapidBaseURL}&note=\\1`
 						},
 					},
 				},

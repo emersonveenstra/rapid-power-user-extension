@@ -21,22 +21,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-const stravaScript = document.querySelector('script[data-is-logged-into-strava]');
+const stravaImageryTypes = ["Ride", "Run", "Water", "Winter", "All"];
 
-//generate iD imagery attributes for given Strava Heatmap type and color
-function resolveStravaHeatmapImagery() {
-	const stravaImageryData = [];
-	const stravaImageryTypes = ["Ride", "Run", "Water", "Winter", "All"];
-	if (!stravaScript) {
-		return [];
-	}
-	const isLoggedIn = stravaScript.dataset.isLoggedIntoStrava;
-	const stravaColor = stravaScript.dataset.stravaColor;
-	const heatmapAlpha = stravaScript.dataset.heatmapAlpha;
-	const maxZoomLevel = stravaScript.dataset.maxZoomLevel;
-
+function updateStravaImageryData(isLoggedIn, stravaColor, heatmapAlpha, maxZoomLevel) {
 	for (const imageryType of stravaImageryTypes) {
-		const desc = (isLoggedIn === "true") ? `The Strava Heatmap (${imageryType}) shows heat made by aggregated, public activities over the last year.` : `You must be logged into Strava to use this imagery`;
+		const desc = (isLoggedIn) ? `The Strava Heatmap (${imageryType}) shows heat made by aggregated, public activities over the last year.` : `You must be logged into Strava to use this imagery`;
+		const source = window.context.systems.imagery.getSourceByID(`StravaHeatmap${imageryType}`);
+		if (source) {
+			source.template = `https://heatmap-external-{switch:a,b,c}.strava.com/tiles/${imageryType.toLowerCase()}/${stravaColor}/{zoom}/{x}/{y}.png?v=19`
+			source._template = `https://heatmap-external-{switch:a,b,c}.strava.com/tiles/${imageryType.toLowerCase()}/${stravaColor}/{zoom}/{x}/{y}.png?v=19`
+			source.zoomRange = maxZoomLevel - 15;
+			source.alpha = heatmapAlpha;
+			source.description = desc;
+		}
+	}
+
+	window.context.systems.imagery.overlayLayerSources().forEach(source => {
+		if (source._id.startsWith("StravaHeatmap")) {
+			console.log(source);
+			window.context.systems.imagery.toggleOverlayLayer(source);
+			setTimeout(() => window.context.systems.imagery.toggleOverlayLayer(source), 1000);
+		}
+	});
+}
+
+function initStravaHeatmapImagery() {
+	const stravaScript = document.querySelector('script[data-is-logged-in]');
+	const isEnabled = stravaScript.dataset.isEnabled === "true";
+	if (!isEnabled) {
+		return;
+	}
+	const isLoggedIn = stravaScript.dataset.isLoggedIn === "true";
+	const stravaColor = stravaScript.dataset.stravaColor;
+	const heatmapAlpha = parseFloat(stravaScript.dataset.heatmapAlpha);
+	const maxZoomLevel = parseInt(stravaScript.dataset.maxZoomLevel);
+	const stravaImageryData = [];
+	for (const imageryType of stravaImageryTypes) {
+		const desc = (isLoggedIn) ? `The Strava Heatmap (${imageryType}) shows heat made by aggregated, public activities over the last year.` : `You must be logged into Strava to use this imagery`;
 		stravaImageryData.push({
 			id: `StravaHeatmap${imageryType}`,
 			name: `Strava Heatmap (${imageryType})`,
@@ -46,69 +67,68 @@ function resolveStravaHeatmapImagery() {
 			zoomExtent: [0, 15],
 			zoomRange: maxZoomLevel - 15,
 			overlay: true,
-			alpha: parseFloat(heatmapAlpha)
+			alpha: heatmapAlpha
 		});
 	}
 	return stravaImageryData;
-  }
-  
-  // override global fetch function used by iD to retrieve imagery json file
-  const { fetch: originalFetch } = window;
-  window.fetch = async (...args) => {
-  
+}
+
+// override global fetch function used by iD to retrieve imagery json file
+const { fetch: originalFetch } = window;
+window.fetch = async (...args) => {
+
 	const [resource, config] = args;
-  
+
 	const response = await originalFetch(resource, config);
-  
+
 	if (resource.match('/data/imagery.')) {
-  
-	  const json = () => response
-		.clone()
-		.json()
-		.then(data => {
-			return {
-				"_meta": data["_meta"],
-				"imagery": [
-					...data["imagery"],
-					...resolveStravaHeatmapImagery()
-				]
-			}
-		});
-  
+		const json = () => response
+			.clone()
+			.json()
+			.then(data => {
+				return {
+					"_meta": data["_meta"],
+					"imagery": [
+						...data["imagery"],
+						...initStravaHeatmapImagery()
+					]
+				}
+			});
 		response.json = json;
 	}
 	return response;
-  };
+};
 
-  function updateStravaCheckboxes(records, observer) {
+function updateStravaCheckboxes() {
+	const stravaScript = document.querySelector('script[data-is-logged-in]');
+	const isLoggedIn = stravaScript.dataset.isLoggedIn === "true";
 	document.querySelectorAll('.layer-overlay-list li label').forEach(e => {
 		const title = e.querySelector('span');
 		if (!title) {
 			return;
 		}
 		if (title.textContent.startsWith("Strava")) {
-			e.querySelector('input').disabled = true;
+			e.querySelector('input').disabled = !isLoggedIn;
 		}
 	})
 }
 
-if (stravaScript && stravaScript.dataset.isLoggedIntoStrava === "false") {
-	const overlayListObserver = new MutationObserver(updateStravaCheckboxes);
+window.addEventListener('message', function (event) {
+	if (event.data.type === 'refreshStravaOptions') {
+		const { isLoggedIn, stravaColor, heatmapAlpha, maxZoomLevel } = event.data.options;
+		updateStravaImageryData(isLoggedIn, stravaColor, heatmapAlpha, maxZoomLevel);
+	}
+});
 
+const stravaScript = document.querySelector('script[data-is-logged-in]');
+if (stravaScript.dataset.isLoggedIn !== "true" || stravaScript.dataset.isEnabled !== "true") {
+	const checkboxObserver = new MutationObserver(updateStravaCheckboxes);
 	const checkForOverlays = setInterval(() => {
 		const overlayList = document.querySelector('.layer-overlay-list');
 		if (overlayList) {
+			checkboxObserver.observe(overlayList, {childList: true, subtree: true, characterData: true});
 			clearInterval(checkForOverlays);
-			overlayListObserver.observe(overlayList, {childList: true, subtree: true, characterData: true});
-			overlayList.querySelectorAll('li label').forEach(e => {
-				const title = e.querySelector('span');
-				if (!title) {
-					return;
-				}
-				if (title.textContent.startsWith("Strava")) {
-					e.querySelector('input').disabled = true;
-				}
-			})
 		}
-	}, 2000)	
+		updateStravaCheckboxes();
+	}, 2000)
 }

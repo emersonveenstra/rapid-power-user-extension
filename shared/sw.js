@@ -1,7 +1,41 @@
 import { Rapid } from './lib/Rapid.js'
-const rapid = new Rapid();
 import { Strava } from './lib/Strava.js'
+const rapid = new Rapid();
 const strava = new Strava();
+
+let contentPorts = [];
+
+function newTabConnection(port) {
+	contentPorts.push(port);
+	port.onDisconnect.addListener(port => {
+		contentPorts.splice(contentPorts.indexOf(port), 1);
+	});
+}
+
+chrome.runtime.onConnect.addListener(newTabConnection);
+
+
+
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+	if (message["type"] === 'refreshRapidRules') {
+		await rapid.updateDynamicRules();
+	}
+	if (message["type"] === 'updateRapidOptions') {
+		rapid.updateOptionsFromHash(message.options).then(() => sendResponse(true));
+	}
+	if (message["type"] === 'requestStravaCredentials') {
+		strava.requestStravaCredentials().then(credentials => sendResponse(credentials));
+	}
+	if (message["type"] === 'clearStravaCredentials') {
+		strava.clearStravaCredentials().then(() => sendResponse(true));
+	}
+	if (message["type"] === 'updateStravaScript') {
+		contentPorts.forEach(port => port.postMessage(message));
+	}
+	if (message["type"] === 'updateHashParams') {
+		await rapid.updateDynamicOptions(message.hash);
+	}
+});
 
 chrome.action.onClicked.addListener(async (tab) => {
 	const rapidBaseURL = await rapid.getRapidBaseURL();

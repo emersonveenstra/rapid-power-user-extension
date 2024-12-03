@@ -12,47 +12,79 @@
     <form>
 		<div class="rapid-options">
 			<h2>Rapid Options</h2>
-			<p>Changing any of these will take effect the next time you click the OSM edit button.</p>
 			<div class="slider-wrapper">
 				<label for="use-canary">Use canary version</label>
-				<input id="use-canary" type="checkbox" class="switch">
+				<span>
+					<input id="use-canary" type="checkbox" class="switch">
+				</span>
 			</div>
-
+			<div class="slider-wrapper">
+				<label for="update-dynamically">Update options dynamically</label>
+				<span>
+					<input id="update-dynamically" type="checkbox" class="switch">
+				</span>
+			</div>
 			<div class="slider-wrapper">	  
 				<label for="poweruser-mode">Enable Poweruser Mode</label>
-				<input id="poweruser-mode" type="checkbox" class="switch">
+				<span>
+					<input id="poweruser-mode" type="checkbox" class="switch">
+				</span>
+				
 			</div>
 
 			<div class="slider-wrapper">  
 				<label for="show-buildings">Show AI Buildings</label>
-				<input id="show-buildings" type="checkbox" class="switch">
+				<span>
+					<input id="show-buildings" type="checkbox" class="switch">
+				</span>
 			</div>
 
 			<div class="slider-wrapper">
 				<label for="show-roads">Show AI Roads</label>
-				<input id="show-roads" type="checkbox" class="switch">
+				<span>
+					<input id="show-roads" type="checkbox" class="switch">
+				</span>
 			</div>
 
 			<div class="slider-wrapper">
 				<label for="extra-datasets">Extra datasets to load</label>
-				<input type="text" id="extra-datasets">
+				<span>
+					<input type="text" id="extra-datasets">
+				</span>
 			</div>
 
 			<div class="slider-wrapper">
-				<label for="default-background">Default background layer</label>
-				<input type="text" id="default-background">
+				<label for="background-layer">Background layer</label>
+				<span>
+					<input type="text" id="background-layer">
+				</span>
+			</div>
+
+			<div class="slider-wrapper">
+				<label for="overlay-layers">Overlay layers</label>
+				<span>
+					<input type="text" id="overlay-layers">
+				</span>
 			</div>
 
 			<div class="slider-wrapper">
 				<label for="disable-features">Disable Features</label>
-				<input type="text" id="disable-features">
+				<span>
+					<input type="text" id="disable-features">
+				</span>
+			</div>
+
+			<div class="slider-wrapper">
+				<label for="other-params">Other params</label>
+				<span>
+					<input type="text" id="other-params">
+				</span>
 			</div>
 		</div>
 		<div class="strava-options">
 			<h2>Strava Heatmap Options:</h2>
-			<p>Changing any of these will require reloading Rapid.</p>
 			<div class="slider-wrapper">
-				<label for="enable-strava">Enable Strava</label>
+				<label for="enable-strava">Enable Strava (requires reload)</label>
 				<input id="enable-strava" type="checkbox" class="switch">
 			</div>
 			<div class="slider-wrapper">

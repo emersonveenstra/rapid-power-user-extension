@@ -133,9 +133,11 @@ export class Rapid {
 			`datasets=${datasets.join(",")}`,
 			`background=${backgroundLayer}`,
 			`overlays=${overlayLayers}`,
-			`disable_features=${disableFeatures}`,
-			otherParams
+			`disable_features=${disableFeatures}`
 		].join('&')
+		if (otherParams) {
+			queryParams = `${queryParams}&${otherParams}`
+		}
 		if (poweruserMode) {
 			queryParams = `${queryParams}&poweruser=true`
 		}

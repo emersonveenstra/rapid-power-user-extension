@@ -26,18 +26,7 @@ If you don't want to use Strava, you can open the extension options (Chrome: rig
 
 ## Customizing
 
-The extension has an options page with several customizable options:
-- Show or hide AI features
-- Show custom datasets on load
-- Change the default background layer
-- Disable OSM features on load
-- Enable poweruser mode
-- Switch between the latest Rapid release and the canary build
-- Choose which heatmap color to use and the opacity of the heatmap
-
-
-## Known bugs
-- Sometimes you need to refresh the page after logging in to Strava for the plugin to recognize the cookies
+See https://github.com/emersonveenstra/rapid-power-user-extension/wiki/Options-page for a full list and description of all the options.
 
 ## Screenshots
 

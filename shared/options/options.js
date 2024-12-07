@@ -44,13 +44,15 @@ async function saveOptions(e) {
 	chrome.runtime.sendMessage({"type": 'requestStravaCredentials'})
 }
 
-function toggleRapidOptions() {
+async function toggleRapidOptions() {
 	const useCanary = document.querySelector('#use-canary').checked;
 	if (!useCanary) {
 		document.querySelector('#use-webgpu').disabled = true;
 		document.querySelector('#use-webgpu').checked = false;
 	} else {
 		document.querySelector('#use-webgpu').disabled = false;
+		const { useWebGPU } = await chrome.storage.local.get('useWebGPU');
+		document.querySelector('#use-webgpu').checked = useWebGPU;
 	}
 	const updateDynamically = document.querySelector('#update-dynamically').checked;
 

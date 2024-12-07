@@ -40,7 +40,19 @@ async function saveOptions(e) {
 	}, 3000)
 	chrome.runtime.sendMessage({"type": 'refreshRapidRules'})
 	chrome.runtime.sendMessage({"type": 'requestStravaCredentials'})
-	chrome.runtime.sendMessage({"type": 'updateStravaScript'})
+}
+
+function toggleRapidOptions() {
+	const updateDynamically = document.querySelector('#update-dynamically').checked;
+
+	document.querySelector('#poweruser-mode').disabled = updateDynamically;
+	document.querySelector('#show-buildings').disabled = updateDynamically;
+	document.querySelector('#show-roads').disabled = updateDynamically;
+	document.querySelector('#extra-datasets').disabled = updateDynamically;
+	document.querySelector('#background-layer').disabled = updateDynamically;
+	document.querySelector('#overlay-layers').disabled = updateDynamically;
+	document.querySelector('#disable-features').disabled = updateDynamically;
+	document.querySelector('#other-params').disabled = updateDynamically;
 }
 
 function toggleStravaOptions() {
@@ -50,6 +62,7 @@ function toggleStravaOptions() {
 	document.querySelector('#heatmap-opacity').disabled = !enableStrava;
 	document.querySelector('#max-zoom-level').disabled = !enableStrava;
 }
+
 async function restoreOptions() {
 	const { useCanary } = await chrome.storage.local.get('useCanary');
 	const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
@@ -82,9 +95,11 @@ async function restoreOptions() {
 	document.querySelector('#strava-color').value = stravaColor ?? 'hot';
 	document.querySelector('#heatmap-opacity').value = heatmapOpacity ?? '100';
 	document.querySelector('#max-zoom-level').value = maxZoomLevel ?? '20';
+	toggleRapidOptions();
 	toggleStravaOptions();
 }
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 document.querySelector("form").addEventListener("submit", saveOptions);
+document.querySelector('#update-dynamically').addEventListener('change', toggleRapidOptions);
 document.querySelector('#enable-strava').addEventListener('change', toggleStravaOptions);

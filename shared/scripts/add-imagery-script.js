@@ -12,21 +12,9 @@ async function getStravaOptions() {
 		maxZoomLevel: maxZoomLevel
 	}
 }
-const port = chrome.runtime.connect({ name: 'rapid-power-user-extension' });
-port.onMessage.addListener(async (message) => {
-	if (message.type === 'updateStravaScript') {
-		chrome.runtime.sendMessage({ "type": 'requestStravaCredentials' }).then(async stravaCredentials => {
-			const newStravaOptions = await getStravaOptions();
-			newStravaOptions.isLoggedIn = stravaCredentials !== null;
-			window.postMessage({
-				type: 'refreshStravaOptions',
-				options: newStravaOptions
-			})
-		});
-	}
-});
 
-chrome.runtime.sendMessage({ "type": 'requestStravaCredentials' }).then(async stravaCredentials => {
+(async () => {
+	const stravaCredentials = await chrome.runtime.sendMessage({ "type": 'requestStravaCredentials' });
 	const { isEnabled, stravaColor, heatmapAlpha, maxZoomLevel } = await getStravaOptions();
 	const displayImageryScript = document.createElement('script');
 	displayImageryScript.src = chrome.runtime.getURL('scripts/display-strava-imagery.js');
@@ -36,7 +24,7 @@ chrome.runtime.sendMessage({ "type": 'requestStravaCredentials' }).then(async st
 	displayImageryScript.dataset.heatmapAlpha = heatmapAlpha;
 	displayImageryScript.dataset.maxZoomLevel = maxZoomLevel;
 	document.documentElement.appendChild(displayImageryScript);
-});
+})();
 
 let currentHash = window.location.hash;
 
@@ -44,7 +32,6 @@ window.addEventListener('load', function (e) {
 	setInterval(() => {
 		if (window.location.hash !== currentHash) {
 			chrome.runtime.sendMessage({ "type": 'updateHashParams', hash: window.location.hash }).then(() => currentHash = window.location.hash);
-			console.log(window.location.hash);
 		}
 	}, 1000)
 });

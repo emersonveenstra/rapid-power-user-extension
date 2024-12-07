@@ -108,7 +108,6 @@ export class Rapid {
 		}
 	}
 
-
 	async getRapidBaseURL() {
 		const { useCanary } = await chrome.storage.local.get('useCanary');
 		const { poweruserMode } = await chrome.storage.local.get('poweruserMode');

@@ -21,30 +21,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-const stravaImageryTypes = ["Ride", "Run", "Water", "Winter", "All"];
-
-function updateStravaImageryData(isLoggedIn, stravaColor, heatmapAlpha, maxZoomLevel) {
-	for (const imageryType of stravaImageryTypes) {
-		const desc = (isLoggedIn) ? `The Strava Heatmap (${imageryType}) shows heat made by aggregated, public activities over the last year.` : `You must be logged into Strava to use this imagery`;
-		const source = window.context.systems.imagery.getSourceByID(`StravaHeatmap${imageryType}`);
-		if (source) {
-			source.template = `https://heatmap-external-{switch:a,b,c}.strava.com/tiles/${imageryType.toLowerCase()}/${stravaColor}/{zoom}/{x}/{y}.png?v=19`
-			source._template = `https://heatmap-external-{switch:a,b,c}.strava.com/tiles/${imageryType.toLowerCase()}/${stravaColor}/{zoom}/{x}/{y}.png?v=19`
-			source.zoomRange = maxZoomLevel - 15;
-			source.alpha = heatmapAlpha;
-			source.description = desc;
-		}
-	}
-
-	window.context.systems.imagery.overlayLayerSources().forEach(source => {
-		if (source._id.startsWith("StravaHeatmap")) {
-			console.log(source);
-			window.context.systems.imagery.toggleOverlayLayer(source);
-			setTimeout(() => window.context.systems.imagery.toggleOverlayLayer(source), 1000);
-		}
-	});
-}
-
 function initStravaHeatmapImagery() {
 	const stravaScript = document.querySelector('script[data-is-logged-in]');
 	const isEnabled = stravaScript.dataset.isEnabled === "true";
@@ -56,7 +32,7 @@ function initStravaHeatmapImagery() {
 	const heatmapAlpha = parseFloat(stravaScript.dataset.heatmapAlpha);
 	const maxZoomLevel = parseInt(stravaScript.dataset.maxZoomLevel);
 	const stravaImageryData = [];
-	for (const imageryType of stravaImageryTypes) {
+	for (const imageryType of  ["Ride", "Run", "Water", "Winter", "All"]) {
 		const desc = (isLoggedIn) ? `The Strava Heatmap (${imageryType}) shows heat made by aggregated, public activities over the last year.` : `You must be logged into Strava to use this imagery`;
 		stravaImageryData.push({
 			id: `StravaHeatmap${imageryType}`,
@@ -112,13 +88,6 @@ function updateStravaCheckboxes() {
 		}
 	})
 }
-
-window.addEventListener('message', function (event) {
-	if (event.data.type === 'refreshStravaOptions') {
-		const { isLoggedIn, stravaColor, heatmapAlpha, maxZoomLevel } = event.data.options;
-		updateStravaImageryData(isLoggedIn, stravaColor, heatmapAlpha, maxZoomLevel);
-	}
-});
 
 const stravaScript = document.querySelector('script[data-is-logged-in]');
 if (stravaScript.dataset.isLoggedIn !== "true" || stravaScript.dataset.isEnabled !== "true") {

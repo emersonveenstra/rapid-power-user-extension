@@ -3,19 +3,6 @@ import { Strava } from './lib/Strava.js'
 const rapid = new Rapid();
 const strava = new Strava();
 
-let contentPorts = [];
-
-function newTabConnection(port) {
-	contentPorts.push(port);
-	port.onDisconnect.addListener(port => {
-		contentPorts.splice(contentPorts.indexOf(port), 1);
-	});
-}
-
-chrome.runtime.onConnect.addListener(newTabConnection);
-
-
-
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message["type"] === 'refreshRapidRules') {
 		await rapid.updateDynamicRules();
@@ -28,9 +15,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	}
 	if (message["type"] === 'clearStravaCredentials') {
 		strava.clearStravaCredentials().then(() => sendResponse(true));
-	}
-	if (message["type"] === 'updateStravaScript') {
-		contentPorts.forEach(port => port.postMessage(message));
 	}
 	if (message["type"] === 'updateHashParams') {
 		await rapid.updateDynamicOptions(message.hash);

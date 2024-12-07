@@ -52,6 +52,12 @@ export class Rapid {
 				useCanary: false
 			});
 		}
+		const { useWebGPU } = await chrome.storage.local.get('useWebGPU');
+		if (useWebGPU === undefined) {
+			await chrome.storage.local.set({
+				useWebGPU: false
+			});
+		}
 		const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
 		if (updateDynamically === undefined) {
 			await chrome.storage.local.set({
@@ -110,6 +116,7 @@ export class Rapid {
 
 	async getRapidBaseURL() {
 		const { useCanary } = await chrome.storage.local.get('useCanary');
+		const { useWebGPU } = await chrome.storage.local.get('useWebGPU');
 		const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
 		const { showBuildings } = await chrome.storage.local.get('showBuildings');
 		const { showRoads } = await chrome.storage.local.get('showRoads');
@@ -139,6 +146,9 @@ export class Rapid {
 		}
 		if (poweruserMode) {
 			queryParams = `${queryParams}&poweruser=true`
+		}
+		if (useWebGPU) {
+			queryParams = `${queryParams}&renderer=webgpu`
 		}
 		const rapidPath = (useCanary) ? "canary" : "edit";
 		return `https://rapideditor.org/${rapidPath}#${queryParams}`;

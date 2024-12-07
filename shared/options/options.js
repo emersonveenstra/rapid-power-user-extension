@@ -1,6 +1,7 @@
 async function saveOptions(e) {
 	e.preventDefault();
 	const useCanary = document.querySelector('#use-canary').checked;
+	const useWebGPU = document.querySelector('#use-webgpu').checked;
 	const updateDynamically = document.querySelector('#update-dynamically').checked;
 	const poweruserMode = document.querySelector('#poweruser-mode').checked;
 	const showBuildings = document.querySelector('#show-buildings').checked;
@@ -18,6 +19,7 @@ async function saveOptions(e) {
 
 	await chrome.storage.local.set({
 		useCanary: useCanary,
+		useWebGPU: useWebGPU,
 		updateDynamically: updateDynamically,
 		poweruserMode: poweruserMode,
 		showBuildings:showBuildings,
@@ -43,6 +45,13 @@ async function saveOptions(e) {
 }
 
 function toggleRapidOptions() {
+	const useCanary = document.querySelector('#use-canary').checked;
+	if (!useCanary) {
+		document.querySelector('#use-webgpu').disabled = true;
+		document.querySelector('#use-webgpu').checked = false;
+	} else {
+		document.querySelector('#use-webgpu').disabled = false;
+	}
 	const updateDynamically = document.querySelector('#update-dynamically').checked;
 
 	document.querySelector('#poweruser-mode').disabled = updateDynamically;
@@ -65,6 +74,7 @@ function toggleStravaOptions() {
 
 async function restoreOptions() {
 	const { useCanary } = await chrome.storage.local.get('useCanary');
+	const { useWebGPU } = await chrome.storage.local.get('useWebGPU');
 	const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
 	const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
 	const { showBuildings } = await chrome.storage.local.get('showBuildings');
@@ -81,6 +91,7 @@ async function restoreOptions() {
 	const { maxZoomLevel } = await chrome.storage.local.get('maxZoomLevel');
 
 	document.querySelector('#use-canary').checked = useCanary ?? false;
+	document.querySelector('#use-webgpu').checked = useWebGPU ?? false;
 	document.querySelector('#update-dynamically').checked = updateDynamically ?? false;
 	document.querySelector('#poweruser-mode').checked = poweruserMode ?? false;
 	document.querySelector('#show-buildings').checked = showBuildings ?? false;
@@ -101,5 +112,6 @@ async function restoreOptions() {
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 document.querySelector("form").addEventListener("submit", saveOptions);
+document.querySelector('#use-canary').addEventListener('change', toggleRapidOptions);
 document.querySelector('#update-dynamically').addEventListener('change', toggleRapidOptions);
 document.querySelector('#enable-strava').addEventListener('change', toggleStravaOptions);

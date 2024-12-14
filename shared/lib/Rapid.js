@@ -9,36 +9,52 @@ export class Rapid {
 		const { otherParams } = await chrome.storage.local.get('otherParams');
 		const otherParamKeys = []
 		otherParams.split(',').forEach(param => otherParamKeys.push(param.split('=')[0]));
+		const paramsMap = new Map();
 		const newOtherParamsArray = [];
 		const hashArray = hash.slice(1).split('&');
 		for (const hash of hashArray) {
 			const [key, value] = hash.split('=', 2);
-			switch (key) {
-				case 'datasets':
-					const datasetArray = value.split(',');
-					await chrome.storage.local.set({
-						showRoads: datasetArray.includes('fbRoads'),
-						showBuildings: datasetArray.includes('msBuildings'),
-						extraDatasets: datasetArray.filter(dataset => dataset !== 'fbRoads' && dataset !== 'msBuildings').join(',')
-					});
-					break;
-				case 'background':
-					await chrome.storage.local.set({ backgroundLayer: value });
-					break;
-				case 'overlays':
-					await chrome.storage.local.set({ overlayLayers: value });
-					break;
-				case 'disable_features':
-					await chrome.storage.local.set({ disableFeatures: value });
-					break;
-				case 'poweruser':
-					await chrome.storage.local.set({ poweruserMode: value === 'true' });
-					break;
-				default:
-					if (otherParamKeys.includes(key)) {
-						newOtherParamsArray.push(`${key}=${value}`);
-					}
-					break;
+			paramsMap.set(key, value);
+		}
+		if (paramsMap.has('datasets')) {
+			const datasetArray = paramsMap.get('datasets').split(',');
+			await chrome.storage.local.set({
+				showRoads: datasetArray.includes('fbRoads'),
+				showBuildings: datasetArray.includes('msBuildings'),
+				extraDatasets: datasetArray.filter(dataset => dataset !== 'fbRoads' && dataset !== 'msBuildings').join(',')
+			});
+		} else {
+			await chrome.storage.local.set({
+				showRoads: false,
+				showBuildings: false,
+				extraDatasets: ""
+			});
+		}
+		if (paramsMap.has('background')) {
+			await chrome.storage.local.set({ backgroundLayer: paramsMap.get('background') });
+		}
+		paramsMap.delete('background');
+		if (paramsMap.has('overlays')) {
+			await chrome.storage.local.set({ overlayLayers: paramsMap.get('overlays') });
+		} else {
+			await chrome.storage.local.set({ overlayLayers: "" });
+		}
+		paramsMap.delete('overlays');
+		if (paramsMap.has('disable_features')) {
+			await chrome.storage.local.set({ disableFeatures: paramsMap.get('disable_features') });
+		} else {
+			await chrome.storage.local.set({ disableFeatures: "" });
+		}
+		paramsMap.delete('disable_features');
+		if (paramsMap.has('poweruser')) {
+			await chrome.storage.local.set({ poweruserMode: paramsMap.get('poweruser') === 'true' });
+		} else {
+			await chrome.storage.local.set({ poweruserMode: false });
+		}
+		paramsMap.delete('poweruser');
+		for (const [key, value] of paramsMap) {
+			if (otherParamKeys.includes(key)) {
+				newOtherParamsArray.push(`${key}=${value}`);
 			}
 			await chrome.storage.local.set({ otherParams: newOtherParamsArray.join(',') });
 		}

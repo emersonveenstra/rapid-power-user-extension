@@ -46,12 +46,6 @@ export class Rapid {
 			await chrome.storage.local.set({ disableFeatures: "" });
 		}
 		paramsMap.delete('disable_features');
-		if (paramsMap.has('poweruser')) {
-			await chrome.storage.local.set({ poweruserMode: paramsMap.get('poweruser') === 'true' });
-		} else {
-			await chrome.storage.local.set({ poweruserMode: false });
-		}
-		paramsMap.delete('poweruser');
 		for (const [key, value] of paramsMap) {
 			if (otherParamKeys.includes(key)) {
 				newOtherParamsArray.push(`${key}=${value}`);
@@ -74,16 +68,16 @@ export class Rapid {
 				useWebGPU: false
 			});
 		}
-		const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
-		if (updateDynamically === undefined) {
-			await chrome.storage.local.set({
-				updateDynamically: false
-			});
-		}
 		const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
 		if (poweruserMode === undefined) {
 			await chrome.storage.local.set({
 				poweruserMode: false
+			});
+		}
+		const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
+		if (updateDynamically === undefined) {
+			await chrome.storage.local.set({
+				updateDynamically: false
 			});
 		}
 		const { showBuildings } = await chrome.storage.local.get('showBuildings');

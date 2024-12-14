@@ -2,8 +2,8 @@ async function saveOptions(e) {
 	e.preventDefault();
 	const useCanary = document.querySelector('#use-canary').checked;
 	const useWebGPU = document.querySelector('#use-webgpu').checked;
-	const updateDynamically = document.querySelector('#update-dynamically').checked;
 	const poweruserMode = document.querySelector('#poweruser-mode').checked;
+	const updateDynamically = document.querySelector('#update-dynamically').checked;
 	const showBuildings = document.querySelector('#show-buildings').checked;
 	const showRoads = document.querySelector('#show-roads').checked;
 	const extraDatasets = document.querySelector('#extra-datasets').value;
@@ -20,8 +20,8 @@ async function saveOptions(e) {
 	await chrome.storage.local.set({
 		useCanary: useCanary,
 		useWebGPU: useWebGPU,
-		updateDynamically: updateDynamically,
 		poweruserMode: poweruserMode,
+		updateDynamically: updateDynamically,
 		showBuildings:showBuildings,
 		showRoads: showRoads,
 		extraDatasets: extraDatasets,
@@ -56,7 +56,6 @@ async function toggleRapidOptions() {
 	}
 	const updateDynamically = document.querySelector('#update-dynamically').checked;
 
-	document.querySelector('#poweruser-mode').disabled = updateDynamically;
 	document.querySelector('#show-buildings').disabled = updateDynamically;
 	document.querySelector('#show-roads').disabled = updateDynamically;
 	document.querySelector('#extra-datasets').disabled = updateDynamically;
@@ -77,8 +76,8 @@ function toggleStravaOptions() {
 async function restoreOptions() {
 	const { useCanary } = await chrome.storage.local.get('useCanary');
 	const { useWebGPU } = await chrome.storage.local.get('useWebGPU');
-	const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
 	const { poweruserMode } = await chrome.storage.local.get('poweruserMode');
+	const { updateDynamically } = await chrome.storage.local.get('updateDynamically');
 	const { showBuildings } = await chrome.storage.local.get('showBuildings');
 	const { showRoads } = await chrome.storage.local.get('showRoads');
 	const { extraDatasets } = await chrome.storage.local.get('extraDatasets');
@@ -94,8 +93,8 @@ async function restoreOptions() {
 
 	document.querySelector('#use-canary').checked = useCanary ?? false;
 	document.querySelector('#use-webgpu').checked = useWebGPU ?? false;
-	document.querySelector('#update-dynamically').checked = updateDynamically ?? false;
 	document.querySelector('#poweruser-mode').checked = poweruserMode ?? false;
+	document.querySelector('#update-dynamically').checked = updateDynamically ?? false;
 	document.querySelector('#show-buildings').checked = showBuildings ?? false;
 	document.querySelector('#show-roads').checked = showRoads ?? false;
 	document.querySelector('#extra-datasets').value = extraDatasets ?? "";

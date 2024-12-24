@@ -45,15 +45,6 @@ async function saveOptions(e) {
 }
 
 async function toggleRapidOptions() {
-	const useCanary = document.querySelector('#use-canary').checked;
-	if (!useCanary) {
-		document.querySelector('#use-webgpu').disabled = true;
-		document.querySelector('#use-webgpu').checked = false;
-	} else {
-		document.querySelector('#use-webgpu').disabled = false;
-		const { useWebGPU } = await chrome.storage.local.get('useWebGPU');
-		document.querySelector('#use-webgpu').checked = useWebGPU;
-	}
 	const updateDynamically = document.querySelector('#update-dynamically').checked;
 
 	document.querySelector('#show-buildings').disabled = updateDynamically;
@@ -113,6 +104,5 @@ async function restoreOptions() {
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 document.querySelector("form").addEventListener("submit", saveOptions);
-document.querySelector('#use-canary').addEventListener('change', toggleRapidOptions);
 document.querySelector('#update-dynamically').addEventListener('change', toggleRapidOptions);
 document.querySelector('#enable-strava').addEventListener('change', toggleStravaOptions);

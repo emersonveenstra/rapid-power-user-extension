@@ -99,25 +99,33 @@ export class Strava {
 		const keyPairId = await this.getStravaCookie('CloudFront-Key-Pair-Id');
 		const policy    = await this.getStravaCookie('CloudFront-Policy');
 		const signature = await this.getStravaCookie('CloudFront-Signature');
+		const idcf = await this.getStravaCookie('_strava_idcf');
 	
 		const error = !keyPairId || !policy || !signature;
-		const credentials = error ? null : { keyPairId, policy, signature };
+		const credentials = error ? null : { keyPairId, policy, signature, idcf };
 
 		chrome.declarativeNetRequest.updateDynamicRules({
 			removeRuleIds: [ 1 ],
 			addRules: credentials ? [
 				{
 					id: 1,
-					priority: 1,
+					priority: 10,
 					condition: {
-						regexFilter: "^https://heatmap-external-(.*).strava.com/tiles/(all|ride|run|water|winter)/(.*)/(.*)/(.*)/(.*).png\??(.*)",
-						resourceTypes: ['main_frame', 'sub_frame', 'image'],
+						initiatorDomains: ["rapideditor.org"],
+						urlFilter: "||strava.com"
 					},
 					action: {
-						type: 'redirect',
-						redirect: {
-							regexSubstitution: `https://heatmap-external-\\1.strava.com/tiles-auth/\\2/\\3/\\4/\\5/\\6.png?Key-Pair-Id=${keyPairId}&Policy=${policy}&Signature=${signature}`
-						},
+						type: 'modifyHeaders',
+						requestHeaders: [{
+							header: "Cookie",
+							operation: "set",
+							value: `CloudFront-Key-Pair-Id=${keyPairId}; CloudFront-Policy=${policy}; CloudFront-Signature=${signature}; _strava_idcf=${idcf}`
+						}],
+						responseHeaders: [{
+							header: "Access-Control-Allow-Origin",
+							operation: "set",
+							value: "*"
+						}]
 					}
 				}
 			] : []

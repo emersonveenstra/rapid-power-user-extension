@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Rapid Power User Extension",
 	"description": "Fully replace iD with Rapid for all your OSM editing needs. Includes automatic rewrites from osm.org and Strava support",
-	"version": "0.5.1",
+	"version": "0.5.2",
 	"browser_specific_settings": {
 		"gecko": {
 			"id": "rapid-power-user-extension@github.com",
@@ -79,12 +79,5 @@
 			]
 		}
 	],
-	"declarative_net_request": {
-		"rule_resources": [{
-			"id": "osm_org_rewrites",
-			"enabled": true,
-			"path": "static_rules.json"
-		}]
-	},
 	"homepage_url": "https://github.com/emersonveenstra/rapid-power-user-extension"
   }

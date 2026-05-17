@@ -63,12 +63,8 @@ export class Strava {
 		if (!cookie)
 			return null;
 	
-		const { expirationDate, value } = cookie;
-		const nowInSeconds = Date.now() / 1000;
-		if (expirationDate && expirationDate <= nowInSeconds) {
-			return null;
-		}
-		else if (value === undefined) {
+    const { value } = cookie;
+		if (value === undefined) {
 			return null;
 		}
 		else {

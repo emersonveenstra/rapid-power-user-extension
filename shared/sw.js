@@ -10,8 +10,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 	if (message["type"] === 'updateRapidOptions') {
 		rapid.updateOptionsFromHash(message.options).then(() => sendResponse(true));
 	}
-	if (message["type"] === 'requestStravaCredentials') {
-		strava.requestStravaCredentials().then(credentials => sendResponse(credentials));
+  if (message["type"] === 'requestStravaCredentials') {
+    const credentials = await strava.requestStravaCredentials();
+    console.log(credentials)
+    return credentials
+    // strava.requestStravaCredentials().then(credentials => {
+    //   console.log(credentials)
+    //   sendResponse(credentials)
+    // });
+    // return true;
 	}
 	if (message["type"] === 'clearStravaCredentials') {
 		strava.clearStravaCredentials().then(() => sendResponse(true));
